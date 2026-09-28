@@ -1,5 +1,12 @@
 const ITEMS = [
   {
+    title: 'General Secretary - Logic Play',
+    role: 'General Secretary',
+    date: 'July 2026 - Present',
+    detail: 'Spearheading leadership and operational responsibilities for Logic Play, I oversee event logistics, strategic planning, cross-functional collaboration, and mentorship to foster a vibrant technical community dedicated to innovation and professional growth.',
+    badge: 'Leadership',
+  },
+  {
     title: 'Acceedo IoT Solutions',
     role: 'Software Developer (Internship)',
     date: 'Jun 2026 – Jul 2026',
@@ -33,7 +40,7 @@ export const CurrentlyWorkingOn = () => {
             <span className="sec-label-txt font-mono text-[10px] tracking-[.45em] uppercase text-[#10B981]">Professional Experience</span>
           </div>
           <h2 className="sec-title font-display font-black text-[clamp(36px,5vw,72px)] leading-[1.05] text-white">
-            Intern<em className="text-[#10B981] not-italic">ships.</em>
+            Professional<em className="text-[#10B981] not-italic"> Experience.</em>
           </h2>
         </div>
 
