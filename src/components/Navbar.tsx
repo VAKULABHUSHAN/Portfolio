@@ -4,6 +4,8 @@ const NAV_LINKS = [
   { label: 'About', href: '#about' },
   { label: 'Skills', href: '#skills' },
   { label: 'Projects', href: '#projects' },
+  { label: 'Experience', href: '#experience' },
+  { label: 'Achievements', href: '#achievements' },
   { label: 'Contact', href: '#contact' },
 ]
 
@@ -92,7 +94,7 @@ export const Navbar = () => {
         </a>
 
         {/* Desktop links */}
-        <ul className="hidden md:flex items-center gap-12">
+        <ul className="hidden md:flex items-center gap-5 lg:gap-8 xl:gap-10">
           {NAV_LINKS.map(l => {
             const isActive = activeHref === l.href
             return (
