@@ -81,6 +81,7 @@ const ACHIEVEMENTS: Achievement[] = [
     detail: 'Emerged as the overall winner in the VibeX tech competition, bagging a cash prize of ₹2,000.',
     badge: 'Winner (₹2,000)',
     imagePlaceholder: 'vibex_winner.jpg',
+    imageSrc: '/vibex_winner.jpg',
   },
   {
     id: 'datathon26',
@@ -89,6 +90,7 @@ const ACHIEVEMENTS: Achievement[] = [
     detail: 'Secured 3rd place in Datathon 26, earning a cash prize award of ₹6,000.',
     badge: '3rd Place (₹6,000)',
     imagePlaceholder: 'datathon26_award.jpg',
+    imageSrc: '/datathon26_award.jpg',
   },
   {
     id: 'new-app',
