@@ -67,25 +67,36 @@ export const About = () => {
             </p>
 
             <p className="reveal about-p text-base leading-[1.9] text-[#F8F4F0]/80 font-normal" style={{ transitionDelay: '0.3s' }}>
-              From deploying enterprise industrial <strong className="text-[#D4C5BA] font-medium">ERP systems</strong> across industries in Coimbatore to integrating cutting-edge <span className="text-[#10B981]">hybrid AI applications (Ollama Local LLM &amp; OCR)</span>, I thrive on building state-of-the-art cross-platform solutions that drive real business growth.
+              As a recognized <strong className="text-[#10B981] font-semibold">4x Hackathons Winner</strong>, from deploying enterprise industrial <strong className="text-[#D4C5BA] font-medium">ERP systems</strong> across industries in Coimbatore to integrating cutting-edge <span className="text-[#10B981]">hybrid AI applications (Ollama Local LLM &amp; OCR)</span>, I thrive on building state-of-the-art cross-platform solutions that drive real business growth.
             </p>
 
-            <div className="about-stats-row flex gap-8 py-6 my-2 border-y border-[#0D6E4F]/25">
+            <div className="about-stats-row grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 py-6 my-2 border-y border-[#0D6E4F]/25 w-full">
               {[
+                { num: '4x', lbl: 'Hackathon Wins', delay: '0.45s' },
                 { num: '2+', lbl: 'Years Exp.', delay: '0.5s' },
                 { num: '4+', lbl: 'ERP & AI Apps', delay: '0.55s' },
-                { num: '9.1', lbl: 'College GPA', delay: '0.6s' }
+                { num: '9.1', lbl: 'College CGPA', delay: '0.6s' }
               ].map((s, idx) => (
-                <div key={idx} className="reveal asr-item" style={{ transitionDelay: s.delay }}>
-                  <div className="asr-num font-display font-black text-[42px] leading-none text-white">{s.num.slice(0, -1)}<em className="text-[#10B981] not-italic">{s.num.slice(-1)}.</em></div>
-                  <div className="asr-lbl font-mono text-[14px] tracking-[.3em] uppercase text-[#9A8880] mt-[5px]">{s.lbl}</div>
+                <div key={idx} className="reveal asr-item min-w-0" style={{ transitionDelay: s.delay }}>
+                  <div className="asr-num font-display font-black text-[30px] sm:text-[34px] lg:text-[38px] leading-none text-white whitespace-nowrap">
+                    {s.num.slice(0, -1)}<em className="text-[#10B981] not-italic">{s.num.slice(-1)}.</em>
+                  </div>
+                  <div className="asr-lbl font-mono text-[11px] sm:text-[12px] tracking-[.15em] uppercase text-[#9A8880] mt-1.5 leading-snug">
+                    {s.lbl}
+                  </div>
                 </div>
               ))}
             </div>
 
-            <div className="reveal-step status-pill inline-flex items-center gap-2 px-[18px] py-2 border border-[#0D6E4F]/40 bg-[#0D6E4F]/12 self-start" style={{ transitionDelay: '0.7s' }}>
-              <span className="s-dot w-[7px] h-[7px] rounded-full bg-[#4ade80] shadow-[0_0_0_0_rgba(74,222,128,0.4)] animate-[pulse-dot_2s_ease-in-out_infinite]"></span>
-              <span className="font-mono text-[14px] tracking-[.25em] uppercase text-[#10B981]">Open to Full-Stack & Mobile Dev Opportunities</span>
+            <div className="flex flex-wrap items-center gap-3">
+              <div className="reveal-step status-pill inline-flex items-center gap-2 px-[18px] py-2 border border-[#0D6E4F]/40 bg-[#0D6E4F]/12" style={{ transitionDelay: '0.7s' }}>
+                <span className="s-dot w-[7px] h-[7px] rounded-full bg-[#4ade80] shadow-[0_0_0_0_rgba(74,222,128,0.4)] animate-[pulse-dot_2s_ease-in-out_infinite]"></span>
+                <span className="font-mono text-[13px] tracking-[.25em] uppercase text-[#10B981]">Open to Full-Stack &amp; Mobile Dev Opportunities</span>
+              </div>
+              <div className="reveal-step inline-flex items-center gap-2 px-4 py-2 border border-[#10B981]/40 bg-[#10B981]/10 shadow-[0_0_15px_rgba(16,185,129,0.15)]" style={{ transitionDelay: '0.75s' }}>
+                <span className="text-[#10B981] font-mono text-[13px]">🏆</span>
+                <span className="font-mono text-[13px] tracking-[.25em] uppercase text-[#10B981] font-semibold">4x Hackathons Winner</span>
+              </div>
             </div>
           </div>
         </div>

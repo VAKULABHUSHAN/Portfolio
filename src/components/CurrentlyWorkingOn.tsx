@@ -44,11 +44,12 @@ interface Achievement {
 const ACHIEVEMENTS: Achievement[] = [
   {
     id: 'science-forum',
-    title: '1st Place - Science Forum Project Presentation',
-    date: 'Oct 2024',
-    detail: 'Won 1st Place in the Project Presentation in the Science Forum at college for innovative tech implementation.',
+    title: '1st Place — Science Forum Project Contest',
+    date: '09 Oct 2024',
+    detail: 'Awarded 1st Prize in the "Creative Minds: Innovative Students Project Contest" project competition on the occasion of Science Forum-2024 at SRM Institute of Science and Technology (Ramapuram).',
     badge: '1st Place Winner',
     imagePlaceholder: 'science_forum_award.jpg',
+    imageSrc: '/science_forum_award.jpg',
   },
   {
     id: 'quickmetrics',
