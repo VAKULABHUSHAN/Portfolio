@@ -93,6 +93,15 @@ const ACHIEVEMENTS: Achievement[] = [
     imageSrc: '/datathon26_award.jpg',
   },
   {
+    id: 'ick-a-thon',
+    title: 'ICK-A-THON — SSN College of Engineering',
+    date: '09 Oct 2026',
+    detail: 'Awarded at ICK-A-THON, an innovative hackathon organized by SSN IEEE during SSN IEEE DAY \'26 at SSN College of Engineering, developing creative solutions transforming everyday frustrations into impactful tech.',
+    badge: 'SSN IEEE Hackathon',
+    imagePlaceholder: 'ickathon_ssn.jpg',
+    imageSrc: '/ickathon_ssn.jpg',
+  },
+  {
     id: 'new-app',
     title: 'New Play Store Mobile App Launch',
     date: 'Coming Soon',
@@ -113,7 +122,24 @@ const ACHIEVEMENTS: Achievement[] = [
 export const CurrentlyWorkingOn = () => {
   const [activeIndex, setActiveIndex] = useState(0)
   const [isPaused, setIsPaused] = useState(false)
+  const [modalImage, setModalImage] = useState<Achievement | null>(null)
   const touchStartX = useRef<number | null>(null)
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setModalImage(null)
+    }
+    if (modalImage) {
+      window.addEventListener('keydown', handleKeyDown)
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = 'unset'
+    }
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown)
+      document.body.style.overflow = 'unset'
+    }
+  }, [modalImage])
 
   const N = ACHIEVEMENTS.length
 
@@ -255,7 +281,13 @@ export const CurrentlyWorkingOn = () => {
               return (
                 <div
                   key={card.id}
-                  onClick={() => setActiveIndex(index)}
+                  onClick={() => {
+                    if (isCenter && card.imageSrc) {
+                      setModalImage(card)
+                    } else {
+                      setActiveIndex(index)
+                    }
+                  }}
                   className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transition-all duration-700 ease-out rounded-2xl overflow-hidden cursor-pointer ${
                     isCenter
                       ? 'w-[280px] sm:w-[340px] md:w-[380px] h-[400px] sm:h-[480px] md:h-[510px] border-2 border-[#10B981] shadow-[0_0_40px_rgba(16,185,129,0.45)]'
@@ -269,6 +301,14 @@ export const CurrentlyWorkingOn = () => {
                 >
                   {/* Card Background / Image Container */}
                   <div className="relative w-full h-full bg-gradient-to-b from-[#0B251C] via-[#071912] to-[#040F0A] flex flex-col justify-between p-6 overflow-hidden">
+                    
+                    {isCenter && card.imageSrc && (
+                      <div className="absolute top-3 right-3 z-30 bg-[#040F0A]/80 border border-[#10B981]/50 rounded-full p-1.5 text-[#10B981] shadow-lg pointer-events-none" title="Click to view full photo">
+                        <svg width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                          <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" />
+                        </svg>
+                      </div>
+                    )}
                     
                     {card.imageSrc ? (
                       <img
@@ -345,6 +385,20 @@ export const CurrentlyWorkingOn = () => {
             <p className="text-[15px] sm:text-[16px] text-white/80 leading-relaxed max-w-[620px] mx-auto">
               {activeAchievement.detail}
             </p>
+            {activeAchievement.imageSrc && (
+              <div className="mt-4">
+                <button
+                  type="button"
+                  onClick={() => setModalImage(activeAchievement)}
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[#0D6E4F]/25 border border-[#10B981]/40 text-[#10B981] hover:bg-[#10B981] hover:text-[#040F0A] font-mono text-[12.5px] tracking-wide transition-all duration-300 shadow-[0_0_15px_rgba(16,185,129,0.15)] active:scale-95 cursor-pointer"
+                >
+                  <svg width="15" height="15" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" />
+                  </svg>
+                  <span>View Full Photo</span>
+                </button>
+              </div>
+            )}
           </div>
 
           {/* Controls: Prev/Next Arrow Buttons & Dots */}
@@ -395,6 +449,58 @@ export const CurrentlyWorkingOn = () => {
         </div>
 
       </div>
+
+      {/* Lightbox Modal for Full Resolution Event Photo */}
+      {modalImage && modalImage.imageSrc && (
+        <div
+          className="fixed inset-0 z-[100] bg-black/85 backdrop-blur-md flex items-center justify-center p-4 sm:p-6"
+          onClick={() => setModalImage(null)}
+        >
+          <div
+            className="relative max-w-4xl w-full max-h-[90vh] bg-[#071912] border border-[#10B981]/40 rounded-2xl overflow-hidden shadow-[0_0_50px_rgba(16,185,129,0.3)] flex flex-col"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Modal Header */}
+            <div className="flex items-center justify-between p-4 sm:p-5 border-b border-[#0D6E4F]/30 bg-[#040F0A]/90">
+              <div className="flex items-center gap-3">
+                <span className="px-3 py-1 rounded-full bg-[#10B981]/20 border border-[#10B981]/50 text-[#10B981] font-mono text-[11px] uppercase tracking-wider">
+                  {modalImage.badge}
+                </span>
+                <span className="font-mono text-[12px] text-white/70">{modalImage.date}</span>
+              </div>
+              <button
+                type="button"
+                onClick={() => setModalImage(null)}
+                aria-label="Close modal"
+                className="w-9 h-9 rounded-full bg-white/10 hover:bg-[#10B981] hover:text-[#040F0A] text-white flex items-center justify-center transition-all duration-200 cursor-pointer"
+              >
+                <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                  <path d="M18 6L6 18M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            {/* Modal Image */}
+            <div className="flex-1 overflow-auto p-2 sm:p-4 bg-black/60 flex items-center justify-center">
+              <img
+                src={modalImage.imageSrc}
+                alt={modalImage.title}
+                className="max-h-[60vh] sm:max-h-[65vh] w-auto max-w-full object-contain rounded-lg shadow-2xl"
+              />
+            </div>
+
+            {/* Modal Footer */}
+            <div className="p-4 sm:p-5 bg-[#040F0A]/90 border-t border-[#0D6E4F]/30">
+              <h4 className="font-display font-bold text-white text-[18px] sm:text-[20px] mb-1">
+                {modalImage.title}
+              </h4>
+              <p className="text-[13px] sm:text-[14.5px] text-white/75 leading-relaxed font-normal">
+                {modalImage.detail}
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   )
 }
