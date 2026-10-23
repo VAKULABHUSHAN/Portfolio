@@ -66,6 +66,7 @@ const ACHIEVEMENTS: Achievement[] = [
     detail: 'Developed a comprehensive full-stack ERP system for warehouse inventory, integrating real-time stock movement, order tracking, and live analytics.',
     badge: 'Full-Stack System',
     imagePlaceholder: 'warehouse_erp.jpg',
+    imageSrc: '/warehouse_erp.jpg',
   },
   {
     id: 'devhouse26',
