@@ -39,6 +39,8 @@ interface Achievement {
   badge: string
   imagePlaceholder: string
   imageSrc?: string
+  images?: string[]
+  imageCaptions?: string[]
 }
 
 const ACHIEVEMENTS: Achievement[] = [
@@ -75,6 +77,12 @@ const ACHIEVEMENTS: Achievement[] = [
     detail: 'Achieved Top 5 position among elite hackathon teams at Devhouse26 hosted in VITC.',
     badge: 'Hackathon Top 5',
     imagePlaceholder: 'devhouse26_vitc.jpg',
+    imageSrc: '/devhouse26_vitc.jpg',
+    images: ['/devhouse26_vitc.jpg', '/devhouse26_stage.jpg'],
+    imageCaptions: [
+      'Building at Table 55 during DevsHouse \'26 (48-Hour Hackathon by GDG on Campus, VIT Chennai)',
+      'DevsHouse \'26 3rd Edition Main Stage & Hackathon Auditorium at VIT Chennai',
+    ],
   },
   {
     id: 'vibex',
@@ -125,11 +133,22 @@ export const CurrentlyWorkingOn = () => {
   const [activeIndex, setActiveIndex] = useState(0)
   const [isPaused, setIsPaused] = useState(false)
   const [modalImage, setModalImage] = useState<Achievement | null>(null)
+  const [modalPhotoIndex, setModalPhotoIndex] = useState(0)
+  const [cardPhotoIndices, setCardPhotoIndices] = useState<Record<string, number>>({})
   const touchStartX = useRef<number | null>(null)
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') setModalImage(null)
+      if (!modalImage) return
+      const count = modalImage.images && modalImage.images.length > 0 ? modalImage.images.length : (modalImage.imageSrc ? 1 : 0)
+      if (count > 1) {
+        if (e.key === 'ArrowRight') {
+          setModalPhotoIndex((prev) => (prev + 1) % count)
+        } else if (e.key === 'ArrowLeft') {
+          setModalPhotoIndex((prev) => (prev - 1 + count) % count)
+        }
+      }
     }
     if (modalImage) {
       window.addEventListener('keydown', handleKeyDown)
@@ -280,12 +299,19 @@ export const CurrentlyWorkingOn = () => {
               // Render visible cards in wrap loop
               if (absOffset > 3) return null
 
+              const currentCardPhotoIdx = cardPhotoIndices[card.id] || 0
+              const displayCardImage = (card.images && card.images.length > 0)
+                ? card.images[currentCardPhotoIdx % card.images.length]
+                : card.imageSrc
+              const hasImage = Boolean(displayCardImage)
+
               return (
                 <div
                   key={card.id}
                   onClick={() => {
-                    if (isCenter && card.imageSrc) {
+                    if (isCenter && hasImage) {
                       setModalImage(card)
+                      setModalPhotoIndex(currentCardPhotoIdx)
                     } else {
                       setActiveIndex(index)
                     }
@@ -304,19 +330,30 @@ export const CurrentlyWorkingOn = () => {
                   {/* Card Background / Image Container */}
                   <div className="relative w-full h-full bg-gradient-to-b from-[#0B251C] via-[#071912] to-[#040F0A] flex flex-col justify-between p-6 overflow-hidden">
                     
-                    {isCenter && card.imageSrc && (
+                    {isCenter && hasImage && (
                       <div className="absolute top-3 right-3 z-30 bg-[#040F0A]/80 border border-[#10B981]/50 rounded-full p-1.5 text-[#10B981] shadow-lg pointer-events-none" title="Click to view full photo">
                         <svg width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
                           <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" />
                         </svg>
                       </div>
                     )}
+
+                    {card.images && card.images.length > 1 && (
+                      <div className="absolute top-3 left-3 z-30 flex items-center gap-1.5 bg-[#040F0A]/85 backdrop-blur-md border border-[#10B981]/50 px-2.5 py-1 rounded-full text-[10.5px] font-mono text-[#10B981] shadow-lg pointer-events-none">
+                        <svg width="12" height="12" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                          <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                          <circle cx="8.5" cy="8.5" r="1.5" />
+                          <polyline points="21 15 16 10 5 21" />
+                        </svg>
+                        <span>{card.images.length} Photos</span>
+                      </div>
+                    )}
                     
-                    {card.imageSrc ? (
+                    {hasImage ? (
                       <img
-                        src={card.imageSrc}
+                        src={displayCardImage}
                         alt={card.title}
-                        className="absolute inset-0 w-full h-full object-cover"
+                        className="absolute inset-0 w-full h-full object-cover transition-opacity duration-300"
                       />
                     ) : (
                       <>
@@ -359,6 +396,26 @@ export const CurrentlyWorkingOn = () => {
 
                     {/* Bottom Card Caption (Shows title clearly when active) */}
                     <div className="relative z-20 pt-4 bg-gradient-to-t from-[#040F0A] via-[#040F0A]/90 to-transparent -mx-6 -mb-6 p-6">
+                      {isCenter && card.images && card.images.length > 1 && (
+                        <div className="flex items-center justify-center gap-2 mb-2.5" onClick={(e) => e.stopPropagation()}>
+                          {card.images.map((_, pIdx) => (
+                            <button
+                              key={pIdx}
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                setCardPhotoIndices((prev) => ({ ...prev, [card.id]: pIdx }))
+                              }}
+                              aria-label={`Show photo ${pIdx + 1}`}
+                              className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer ${
+                                currentCardPhotoIdx === pIdx
+                                  ? 'w-6 bg-[#10B981] shadow-[0_0_8px_#10B981]'
+                                  : 'w-2 bg-white/40 hover:bg-white/80'
+                              }`}
+                            />
+                          ))}
+                        </div>
+                      )}
                       <h3 className={`font-display font-bold text-white leading-snug line-clamp-2 ${
                         isCenter ? 'text-[18px] sm:text-[20px] text-[#10B981]' : 'text-[15px] opacity-80'
                       }`}>
@@ -387,17 +444,24 @@ export const CurrentlyWorkingOn = () => {
             <p className="text-[15px] sm:text-[16px] text-white/80 leading-relaxed max-w-[620px] mx-auto">
               {activeAchievement.detail}
             </p>
-            {activeAchievement.imageSrc && (
+            {(activeAchievement.imageSrc || (activeAchievement.images && activeAchievement.images.length > 0)) && (
               <div className="mt-4">
                 <button
                   type="button"
-                  onClick={() => setModalImage(activeAchievement)}
+                  onClick={() => {
+                    setModalImage(activeAchievement)
+                    setModalPhotoIndex(cardPhotoIndices[activeAchievement.id] || 0)
+                  }}
                   className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[#0D6E4F]/25 border border-[#10B981]/40 text-[#10B981] hover:bg-[#10B981] hover:text-[#040F0A] font-mono text-[12.5px] tracking-wide transition-all duration-300 shadow-[0_0_15px_rgba(16,185,129,0.15)] active:scale-95 cursor-pointer"
                 >
                   <svg width="15" height="15" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                     <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" />
                   </svg>
-                  <span>View Full Photo</span>
+                  <span>
+                    {activeAchievement.images && activeAchievement.images.length > 1
+                      ? `View Photos (${activeAchievement.images.length})`
+                      : 'View Full Photo'}
+                  </span>
                 </button>
               </div>
             )}
@@ -453,13 +517,13 @@ export const CurrentlyWorkingOn = () => {
       </div>
 
       {/* Lightbox Modal for Full Resolution Event Photo */}
-      {modalImage && modalImage.imageSrc && (
+      {modalImage && (modalImage.imageSrc || (modalImage.images && modalImage.images.length > 0)) && (
         <div
-          className="fixed inset-0 z-[100] bg-black/85 backdrop-blur-md flex items-center justify-center p-4 sm:p-6"
+          className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-md flex items-center justify-center p-3 sm:p-6"
           onClick={() => setModalImage(null)}
         >
           <div
-            className="relative max-w-4xl w-full max-h-[90vh] bg-[#071912] border border-[#10B981]/40 rounded-2xl overflow-hidden shadow-[0_0_50px_rgba(16,185,129,0.3)] flex flex-col"
+            className="relative max-w-4xl w-full max-h-[92vh] bg-[#071912] border border-[#10B981]/40 rounded-2xl overflow-hidden shadow-[0_0_50px_rgba(16,185,129,0.3)] flex flex-col"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Modal Header */}
@@ -469,6 +533,11 @@ export const CurrentlyWorkingOn = () => {
                   {modalImage.badge}
                 </span>
                 <span className="font-mono text-[12px] text-white/70">{modalImage.date}</span>
+                {modalImage.images && modalImage.images.length > 1 && (
+                  <span className="font-mono text-[11px] px-2.5 py-0.5 rounded-full bg-[#0D6E4F]/30 border border-[#0D6E4F]/50 text-[#10B981]">
+                    {modalPhotoIndex + 1} / {modalImage.images.length}
+                  </span>
+                )}
               </div>
               <button
                 type="button"
@@ -482,14 +551,71 @@ export const CurrentlyWorkingOn = () => {
               </button>
             </div>
 
-            {/* Modal Image */}
-            <div className="flex-1 overflow-auto p-2 sm:p-4 bg-black/60 flex items-center justify-center">
+            {/* Modal Image Area with Navigation Buttons */}
+            <div className="relative flex-1 overflow-hidden p-2 sm:p-4 bg-black/70 flex items-center justify-center min-h-[300px]">
+              {modalImage.images && modalImage.images.length > 1 && (
+                <>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      setModalPhotoIndex((prev) => (prev - 1 + modalImage.images!.length) % modalImage.images!.length)
+                    }}
+                    aria-label="Previous photo"
+                    className="absolute left-3 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-full bg-[#040F0A]/85 border border-[#10B981]/50 text-[#10B981] hover:bg-[#10B981] hover:text-[#040F0A] flex items-center justify-center transition-all duration-200 shadow-xl cursor-pointer"
+                  >
+                    <svg width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                      <path d="M15 18l-6-6 6-6" />
+                    </svg>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      setModalPhotoIndex((prev) => (prev + 1) % modalImage.images!.length)
+                    }}
+                    aria-label="Next photo"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-full bg-[#040F0A]/85 border border-[#10B981]/50 text-[#10B981] hover:bg-[#10B981] hover:text-[#040F0A] flex items-center justify-center transition-all duration-200 shadow-xl cursor-pointer"
+                  >
+                    <svg width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                      <path d="M9 18l6-6-6-6" />
+                    </svg>
+                  </button>
+                </>
+              )}
+
               <img
-                src={modalImage.imageSrc}
+                src={
+                  modalImage.images && modalImage.images.length > 0
+                    ? modalImage.images[modalPhotoIndex]
+                    : modalImage.imageSrc
+                }
                 alt={modalImage.title}
-                className="max-h-[60vh] sm:max-h-[65vh] w-auto max-w-full object-contain rounded-lg shadow-2xl"
+                key={modalPhotoIndex}
+                className="max-h-[58vh] sm:max-h-[62vh] w-auto max-w-full object-contain rounded-lg shadow-2xl transition-all duration-300"
               />
             </div>
+
+            {/* Thumbnail Strip */}
+            {modalImage.images && modalImage.images.length > 1 && (
+              <div className="flex items-center justify-center gap-3 px-4 py-2.5 bg-[#040F0A]/95 border-t border-[#0D6E4F]/20">
+                {modalImage.images.map((imgUrl, thumbIdx) => (
+                  <button
+                    key={thumbIdx}
+                    type="button"
+                    onClick={() => setModalPhotoIndex(thumbIdx)}
+                    className={`relative w-16 h-12 rounded-lg overflow-hidden border-2 transition-all duration-200 cursor-pointer ${
+                      modalPhotoIndex === thumbIdx
+                        ? 'border-[#10B981] scale-105 shadow-[0_0_12px_#10B981]'
+                        : 'border-[#0D6E4F]/40 opacity-60 hover:opacity-100 hover:border-[#10B981]/60'
+                    }`}
+                  >
+                    <img src={imgUrl} alt={`Thumbnail ${thumbIdx + 1}`} className="w-full h-full object-cover" />
+                  </button>
+                ))}
+              </div>
+            )}
 
             {/* Modal Footer */}
             <div className="p-4 sm:p-5 bg-[#040F0A]/90 border-t border-[#0D6E4F]/30">
@@ -497,7 +623,9 @@ export const CurrentlyWorkingOn = () => {
                 {modalImage.title}
               </h4>
               <p className="text-[13px] sm:text-[14.5px] text-white/75 leading-relaxed font-normal">
-                {modalImage.detail}
+                {modalImage.imageCaptions && modalImage.imageCaptions[modalPhotoIndex]
+                  ? modalImage.imageCaptions[modalPhotoIndex]
+                  : modalImage.detail}
               </p>
             </div>
           </div>
