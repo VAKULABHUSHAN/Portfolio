@@ -121,11 +121,12 @@ const ACHIEVEMENTS: Achievement[] = [
   },
   {
     id: 'milestones-summary',
-    title: 'Career & Leadership Milestones',
-    date: 'Ongoing',
-    detail: 'Completed 3 software internships, delivered 1 client freelance project, and leading as General Secretary in Logic Play club.',
+    title: 'Leadership Milestone — LOGIC PLAY',
+    date: 'July 2026 - Present',
+    detail: 'General Secretary of the technical club LOGIC PLAY.',
     badge: 'Leadership & Impact',
-    imagePlaceholder: 'leadership_milestones.jpg',
+    imagePlaceholder: 'logic_play_leadership.jpg',
+    imageSrc: '/logic_play_leadership.jpg',
   },
 ]
 
