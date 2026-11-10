@@ -120,10 +120,10 @@ export const Navbar = () => {
 
         {/* Resume CTA */}
         <a
-          href="/resume.pdf"
+          href="https://drive.google.com/file/d/1HZDE0cqK7sdsBQblMx5IVwSCLwK7w1AU/view?usp=sharing"
           target="_blank"
           rel="noopener noreferrer"
-          aria-label="View Vakulabhushan NJ Resume PDF"
+          aria-label="View Vakulabhushan NJ Resume"
           className="hidden md:inline-flex items-center gap-2 px-6 py-2.5 border border-white/20 text-[12px] tracking-[.15em] uppercase text-[#F8F4F0]/90 hover:text-white hover:border-[#10B981]/50 transition-all duration-400 rounded-[2px] relative overflow-hidden group"
         >
           <span className="relative z-10 font-medium">Resume</span>
@@ -207,7 +207,7 @@ export const Navbar = () => {
 
           <div className="pt-6 border-t border-white/10">
             <a
-              href="/resume.pdf"
+              href="https://drive.google.com/file/d/1HZDE0cqK7sdsBQblMx5IVwSCLwK7w1AU/view?usp=sharing"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center justify-center w-full rounded-full border border-white/10 bg-white/5 px-4 py-3 text-[13px] tracking-[.2em] uppercase text-[#F8F4F0]/80 hover:bg-[#10B981]/10 hover:text-[#10B981] transition-all duration-300"

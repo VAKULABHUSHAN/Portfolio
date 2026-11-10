@@ -66,8 +66,9 @@ export const CareerGoal = () => {
             </a>
 
             <a
-              href="/resume.pdf"
-              download
+              href="https://drive.google.com/file/d/1HZDE0cqK7sdsBQblMx5IVwSCLwK7w1AU/view?usp=sharing"
+              target="_blank"
+              rel="noopener noreferrer"
               className="reveal-step group relative px-12 py-5 border border-white/10 text-white/70 font-mono text-[11px] tracking-[0.35em] uppercase rounded-full transition-all duration-500 hover:text-white hover:border-[#10B981]/50"
               style={{ transitionDelay: '0.9s' }}
             >

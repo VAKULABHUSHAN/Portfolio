@@ -221,8 +221,9 @@ export const Contact = () => {
             {/* Download Resume */}
             <motion.a
               id="download-resume-btn"
-              href="/resume.pdf"
-              download
+              href="https://drive.google.com/file/d/1HZDE0cqK7sdsBQblMx5IVwSCLwK7w1AU/view?usp=sharing"
+              target="_blank"
+              rel="noopener noreferrer"
               initial={{ opacity: 0, scale: 0.95 }}
               animate={isInView ? { opacity: 1, scale: 1 } : {}}
               transition={{ duration: 0.8, delay: 0.55 }}
