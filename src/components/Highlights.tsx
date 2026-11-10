@@ -1,12 +1,23 @@
 
+import React from 'react'
+
 const COUNTERS = [
   { num: '2+', label: 'Years Experience' },
   { num: '4+', label: 'Shipped Systems' },
   { num: '9.1', label: 'College GPA' },
-  { num: '1st', label: 'Award Winner' },
+  { num: '5+', label: 'Award Winner' },
 ]
 
-const ITEMS = [
+const ITEMS: React.ReactNode[] = [
+  (
+    <span>
+      <strong className="text-[#10B981] font-semibold">Winner of 4 Hackathons:</strong>{' '}
+      <strong className="text-white font-medium">VITC Devshouse 26</strong> (Top 5 among 3,500+ teams),{' '}
+      <strong className="text-white font-medium">Vibex</strong> (1st Place Winner),{' '}
+      <strong className="text-white font-medium">SRMIST Datathon 26</strong> (3rd Place) &amp;{' '}
+      <strong className="text-white font-medium">SSN ICK-A-THON</strong> (3rd Place)
+    </span>
+  ),
   'Launched Quickmetrics (First Mobile App) directly on the Google Play Store (Sept 2025)',
   'Won 1st Place in Project Presentation at the SRM College Science Forum (Oct 2024)',
   'Delivered industrial full-stack ERP systems and hybrid AI Local LLM (Ollama) integrations',
@@ -65,9 +76,9 @@ export const Highlights = () => {
                     <polyline points="20 6 9 17 4 12"></polyline>
                   </svg>
                 </div>
-                <p className="hi-txt text-[16px] sm:text-[18px] text-white/80 leading-relaxed font-normal group-hover:text-white transition-colors duration-300 break-words">
+                <div className="hi-txt text-[16px] sm:text-[18px] text-white/80 leading-relaxed font-normal group-hover:text-white transition-colors duration-300 break-words">
                   {item}
-                </p>
+                </div>
                 {/* Accent line on right */}
                 <div className="hidden md:block ml-auto w-[1px] h-6 bg-gradient-to-b from-transparent via-[#10B981]/30 to-transparent group-hover:h-12 transition-all duration-500"></div>
               </div>
