@@ -144,7 +144,7 @@ export const Hero = ({ appReady }: { appReady: boolean }) => {
       </div>
 
       {/* Top Main Heading Content */}
-      <div className="relative z-[10] hidden w-full pt-[13vh] pb-4 lg:flex justify-center pointer-events-none">
+      <div className="relative z-[10] hidden w-full pt-[9vh] lg:pt-[10vh] pb-3 lg:flex justify-center pointer-events-none">
         <div className="hero-name-anim hero-reveal relative" style={{ '--delay': '0.5s' } as CSSProperties}>
           {/* Subtle green glow behind text (Reduced Intensity) */}
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[140%] h-[140%] bg-[#0B7552] opacity-[0.1] blur-[80px] rounded-full pointer-events-none"></div>
@@ -178,13 +178,13 @@ export const Hero = ({ appReady }: { appReady: boolean }) => {
         </div>
 
         {/* Center Side: Image */}
-        <div className="relative w-full h-[clamp(300px,48svh,390px)] sm:h-[48vh] lg:h-[70vh] lg:max-h-none flex justify-center items-end max-lg:order-1 z-10 pointer-events-none">
-          <div role="presentation" aria-hidden="true" className="absolute top-[-10px] left-1/2 z-[8] -translate-x-1/2 font-display font-black text-[clamp(64px,24vw,110px)] leading-none tracking-[-0.03em] uppercase text-transparent bg-clip-text bg-gradient-to-b from-[#10B981] to-[#0D6E4F] opacity-85 whitespace-nowrap lg:hidden select-none">
+        <div className="relative w-full h-[clamp(340px,52svh,430px)] sm:h-[50vh] lg:h-[75vh] lg:max-h-none flex justify-center items-end max-lg:order-1 z-10 pointer-events-none">
+          <div role="presentation" aria-hidden="true" className="absolute top-[-15px] sm:top-[-10px] left-1/2 z-[8] -translate-x-1/2 font-display font-black text-[clamp(64px,24vw,110px)] leading-none tracking-[-0.03em] uppercase text-transparent bg-clip-text bg-gradient-to-b from-[#10B981] to-[#0D6E4F] opacity-85 whitespace-nowrap lg:hidden select-none">
             VAKUL
           </div>
 
           {/* Arch styled image container */}
-          <div className="absolute bottom-[-18px] lg:bottom-[5px] z-[10] w-[64%] max-w-[320px] lg:w-[min(100%,480px)] lg:max-w-none h-[94%] lg:h-[110%] rounded-t-[500px] overflow-hidden bg-[#020605]">
+          <div className="absolute bottom-[-10px] lg:bottom-0 z-[10] w-[74%] max-w-[340px] sm:w-[66%] lg:w-[min(100%,480px)] lg:max-w-none h-[106%] lg:h-[126%] rounded-t-[500px] overflow-hidden bg-[#020605]">
             <img
               ref={photoRef}
               src="/photo.png"
@@ -197,7 +197,7 @@ export const Hero = ({ appReady }: { appReady: boolean }) => {
               style={{ '--delay': '0.3s' } as CSSProperties}
             />
             {/* Bottom fade inside the arch to seamlessly blend with the background */}
-            <div className="absolute inset-x-0 bottom-0 h-[24%] lg:h-[40%] bg-gradient-to-t from-[#020605] via-[#020605]/80 to-transparent z-[12]"></div>
+            <div className="absolute inset-x-0 bottom-0 h-[24%] lg:h-[35%] bg-gradient-to-t from-[#020605] via-[#020605]/80 to-transparent z-[12]"></div>
 
             {/* Soft inner glow and 1px top rim light for brushed metal effect */}
             <div className="absolute inset-0 rounded-t-[500px] !shadow-none lg:shadow-[inset_0_0_80px_rgba(13,117,83,0.25),inset_0_1.5px_0_rgba(16,185,129,0.3)] z-[13] pointer-events-none"></div>
