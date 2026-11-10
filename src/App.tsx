@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import ScrollTrigger from 'gsap/ScrollTrigger'
 import { useLenis } from './hooks/useLenis'
 import { Preloader } from './components/Preloader'
 
@@ -31,9 +32,15 @@ export default function App() {
     setAppReady(true)
   }
 
-  // Scroll-reveal observer
+  // Scroll-reveal observer & ScrollTrigger refresh
   useEffect(() => {
     if (!appReady) return
+
+    // Recalculate ScrollTrigger once the DOM is visible and measured
+    const refreshTimer = setTimeout(() => {
+      ScrollTrigger.refresh()
+    }, 200)
+
     let io: IntersectionObserver | null = null
     const timer = setTimeout(() => {
       io = new IntersectionObserver(
@@ -50,6 +57,7 @@ export default function App() {
     }, 100)
 
     return () => {
+      clearTimeout(refreshTimer)
       clearTimeout(timer)
       io?.disconnect()
     }

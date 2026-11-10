@@ -1,15 +1,17 @@
-import React from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 
 interface Counter {
   num: string
   label: string
   sub: string
+  metricIndex: number
 }
 
 interface Hackathon {
   name: string
   place: string
   metric: string
+  highlight?: boolean
 }
 
 interface Milestone {
@@ -17,6 +19,7 @@ interface Milestone {
   title: string
   detail: string
   badge: string
+  metricIndex: number
   icon: React.ReactNode
 }
 
@@ -25,21 +28,25 @@ const COUNTERS: Counter[] = [
     num: '4x',
     label: 'Hackathon Wins',
     sub: 'VITC, Vibex, SRMIST, SSN',
+    metricIndex: 0,
   },
   {
     num: '4+',
     label: 'Shipped Systems',
     sub: 'Industrial ERP & Mobile Apps',
+    metricIndex: 1,
   },
   {
     num: '2+',
     label: 'Years Building',
     sub: 'Flutter, Angular & Node.js',
+    metricIndex: 2,
   },
   {
     num: '9.1',
     label: 'College GPA',
     sub: 'B.Tech CSE at SRMIST',
+    metricIndex: 3,
   },
 ]
 
@@ -48,11 +55,13 @@ const HACKATHONS: Hackathon[] = [
     name: "VITC Devshouse '26",
     place: 'Top 5',
     metric: 'Top 5 among 3,500+ teams',
+    highlight: true,
   },
   {
     name: 'Vibex Tech Arena',
     place: '1st Place',
     metric: 'Overall Competition Champion',
+    highlight: true,
   },
   {
     name: "SRMIST Datathon '26",
@@ -70,8 +79,9 @@ const MILESTONES: Milestone[] = [
   {
     category: 'Product Launch',
     title: 'Quickmetrics on Google Play',
-    detail: 'Engineered and published first mobile application directly on the Google Play Store (Sept 2025).',
-    badge: 'Live App',
+    detail: 'Engineered and launched first mobile application directly on Google Play with responsive UI and offline storage.',
+    badge: 'Play Store',
+    metricIndex: 1,
     icon: (
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z" />
@@ -82,22 +92,11 @@ const MILESTONES: Milestone[] = [
     ),
   },
   {
-    category: 'Academic Award',
-    title: 'SRM College Science Forum',
-    detail: 'Secured 1st Place in technical project presentation for modular architecture (Oct 2024).',
-    badge: '1st Place',
-    icon: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <circle cx="12" cy="8" r="6" />
-        <path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11" />
-      </svg>
-    ),
-  },
-  {
     category: 'Enterprise & AI',
-    title: 'Industrial ERP & Local LLM',
-    detail: 'Delivered full-stack ERP for Coimbatore MSMEs with on-premise Ollama AI query pipelines.',
+    title: 'Industrial ERP & On-Premise Ollama',
+    detail: 'Delivered full-stack ERP for MSME manufacturing clients with private local AI (Ollama) query routing pipelines.',
     badge: 'Production',
+    metricIndex: 1,
     icon: (
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <rect width="20" height="8" x="2" y="2" rx="2" ry="2" />
@@ -108,10 +107,11 @@ const MILESTONES: Milestone[] = [
     ),
   },
   {
-    category: 'Leadership',
+    category: 'Engineering Leadership',
     title: 'Secondary Team Lead at Healthletic',
-    detail: 'Directed sprint POAs, Agile delivery, and engineering architectures across cross-functional teams.',
+    detail: 'Led sprint POAs, architecture decisions, and cross-functional Agile workflows for production fitness mobile releases.',
     badge: 'Team Lead',
+    metricIndex: 2,
     icon: (
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
@@ -121,68 +121,208 @@ const MILESTONES: Milestone[] = [
       </svg>
     ),
   },
+  {
+    category: 'Academic Distinction',
+    title: 'SRM College Science Forum — 1st Place',
+    detail: 'Won 1st Place in technical project presentation for high-throughput modular system design and cloud architecture.',
+    badge: '1st Place',
+    metricIndex: 3,
+    icon: (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="12" cy="8" r="6" />
+        <path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11" />
+      </svg>
+    ),
+  },
 ]
 
 export const Highlights = () => {
+  const [activeMetric, setActiveMetric] = useState(0)
+  const itemRefs = useRef<(HTMLDivElement | null)[]>([])
+
+  useEffect(() => {
+    const observers: IntersectionObserver[] = []
+
+    itemRefs.current.forEach((el, index) => {
+      if (!el) return
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              const targetMetric = el.getAttribute('data-metric')
+              if (targetMetric !== null) {
+                setActiveMetric(parseInt(targetMetric, 10))
+              }
+            }
+          })
+        },
+        {
+          root: null,
+          rootMargin: '-15% 0px -40% 0px',
+          threshold: 0.2,
+        }
+      )
+      observer.observe(el)
+      observers.push(observer)
+    })
+
+    return () => {
+      observers.forEach((o) => o.disconnect())
+    }
+  }, [])
+
+  const scrollToMetric = (metricIdx: number) => {
+    const targetEl = itemRefs.current.find(
+      (el) => el && el.getAttribute('data-metric') === String(metricIdx)
+    )
+    if (targetEl) {
+      targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    }
+  }
+
   return (
-    <section id="highlights" className="bg-[#05100B] relative overflow-hidden py-[130px] max-md:py-[80px]">
-      {/* Background Section Title Watermark */}
-      <div className="absolute top-1/2 left-0 -translate-y-1/2 font-display font-black text-[15vw] text-white/[0.012] pointer-events-none select-none whitespace-nowrap z-0">
-        HIGHLIGHTS
+    <section id="highlights" className="bg-[#05100B] relative py-[120px] max-md:py-[70px]">
+      {/* Background Section Title Watermark (contained so it never breaks sticky layout) */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+        <div className="absolute top-1/2 left-0 -translate-y-1/2 font-display font-black text-[15vw] text-white/[0.012] select-none whitespace-nowrap">
+          HIGHLIGHTS
+        </div>
       </div>
 
-      <div className="wrap max-w-[1400px] mx-auto px-20 max-md:px-6 relative z-10">
-        <div className="grid grid-cols-12 gap-12 lg:gap-16 items-start max-lg:flex max-lg:flex-col">
+      <div className="wrap max-w-[1400px] mx-auto px-6 sm:px-12 lg:px-20 relative z-10">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start">
 
-          {/* Left Column: Heading + Counter Cards */}
-          <div className="col-span-12 lg:col-span-5 highlights-intro lg:sticky lg:top-28">
+          {/* Left Column: Heading + Sticky Interactive Metric Cards */}
+          <div className="lg:col-span-5 highlights-intro lg:sticky lg:top-24 z-20">
             <div className="reveal-step">
-              <div className="sec-label flex items-center gap-[14px] mb-5">
+              <div className="sec-label flex items-center gap-[14px] mb-4">
                 <div className="sec-label-line w-7 h-[1px] bg-[#0D6E4F]"></div>
-                <span className="sec-label-txt font-mono text-[13px] tracking-[.45em] uppercase text-[#10B981]">
+                <span className="sec-label-txt font-mono text-[12.5px] tracking-[.45em] uppercase text-[#10B981]">
                   Verified Impact
                 </span>
               </div>
             </div>
 
-            <h2 className="reveal-step sec-title font-display font-black text-[clamp(38px,4.5vw,66px)] leading-[1.05] text-white mb-5" style={{ transitionDelay: '0.1s' }}>
+            <h2 className="reveal-step sec-title font-display font-black text-[clamp(34px,4.2vw,62px)] leading-[1.05] text-white mb-4">
               Numbers that <em className="text-transparent bg-clip-text bg-gradient-to-r from-[#10B981] to-[#0A8B5D] italic not-italic">Matter.</em>
             </h2>
 
-            <p className="reveal-step text-[15.5px] text-white/70 leading-relaxed font-normal mb-10 max-w-[480px]" style={{ transitionDelay: '0.15s' }}>
-              Quantifiable proof points spanning competitive hackathon podiums, high-throughput enterprise systems, and academic distinction.
+            <p className="reveal-step text-[14.5px] sm:text-[15.5px] text-white/70 leading-relaxed font-normal mb-8 max-w-[440px]">
+              Quantifiable proof points spanning competitive hackathons, production software architectures, and technical leadership.
             </p>
 
-            {/* 2x2 Metric Cards Grid */}
-            <div className="highlights-counters grid grid-cols-2 gap-4 sm:gap-5">
-              {COUNTERS.map((c, i) => (
-                <div
-                  key={i}
-                  className="reveal counter-card p-6 sm:p-7 rounded-xl border border-white/5 bg-[#0A1C15]/50 backdrop-blur-sm group transition-all duration-500 hover:border-[#10B981]/40 hover:bg-[#0D6E4F]/10 hover:-translate-y-1 relative overflow-hidden"
-                  style={{ transitionDelay: `${i * 0.1}s` }}
-                >
-                  <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#10B981]/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                  <div className="cc-num font-display font-black text-[42px] sm:text-[46px] leading-none text-white mb-2.5 group-hover:text-[#10B981] transition-colors duration-300">
-                    {c.num}
-                  </div>
-                  <div className="cc-lbl font-mono text-[12px] tracking-[.25em] uppercase text-[#9A8880] group-hover:text-white transition-colors mb-1.5 font-medium">
-                    {c.label}
-                  </div>
-                  <div className="text-[11.5px] text-white/45 font-mono group-hover:text-white/70 transition-colors">
-                    {c.sub}
-                  </div>
-                </div>
-              ))}
+            {/* 2x2 Metric Cards Grid with Active Scroll Tracking */}
+            <div className="highlights-counters grid grid-cols-2 gap-3.5 sm:gap-4">
+              {COUNTERS.map((c, i) => {
+                const isActive = activeMetric === c.metricIndex
+                return (
+                  <button
+                    key={i}
+                    type="button"
+                    onClick={() => scrollToMetric(c.metricIndex)}
+                    className={`reveal counter-card text-left p-4 sm:p-5 rounded-xl border transition-all duration-400 relative overflow-hidden group cursor-pointer ${
+                      isActive
+                        ? 'border-[#10B981] bg-[#0D6E4F]/25 shadow-[0_0_25px_rgba(16,185,129,0.22)] scale-[1.02]'
+                        : 'border-white/5 bg-[#0A1C15]/50 hover:border-[#10B981]/40 hover:bg-[#0D6E4F]/10'
+                    }`}
+                    style={{ transitionDelay: `${i * 0.08}s` }}
+                  >
+                    {/* Active emerald rim */}
+                    <div
+                      className={`absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#10B981] to-transparent transition-opacity duration-300 ${
+                        isActive ? 'opacity-100' : 'opacity-0 group-hover:opacity-60'
+                      }`}
+                    />
+
+                    <div className="flex items-baseline justify-between mb-1.5">
+                      <div
+                        className={`cc-num font-display font-black text-[34px] sm:text-[40px] leading-none transition-colors duration-300 ${
+                          isActive ? 'text-[#10B981]' : 'text-white group-hover:text-[#10B981]'
+                        }`}
+                      >
+                        {c.num}
+                      </div>
+                      {isActive && (
+                        <span className="w-2 h-2 rounded-full bg-[#10B981] animate-pulse shadow-[0_0_8px_#10B981]" />
+                      )}
+                    </div>
+
+                    <div
+                      className={`cc-lbl font-mono text-[11px] sm:text-[11.5px] tracking-[.2em] uppercase mb-1 font-medium transition-colors ${
+                        isActive ? 'text-white' : 'text-[#9A8880] group-hover:text-white'
+                      }`}
+                    >
+                      {c.label}
+                    </div>
+
+                    <div
+                      className={`text-[10.5px] sm:text-[11px] font-mono leading-tight transition-colors line-clamp-1 ${
+                        isActive ? 'text-[#10B981]/90' : 'text-white/45 group-hover:text-white/70'
+                      }`}
+                    >
+                      {c.sub}
+                    </div>
+                  </button>
+                )
+              })}
             </div>
           </div>
 
-          {/* Right Column: Featured Hackathon Card + Milestones */}
-          <div className="col-span-12 lg:col-span-7 highlights-list flex flex-col gap-5 w-full">
+          {/* Mobile Sticky Quick-Status Bar */}
+          <div className="lg:hidden col-span-1 sticky top-[64px] z-30 -mx-6 px-6 py-2.5 bg-[#05100B]/92 backdrop-blur-xl border-y border-[#0D6E4F]/30 shadow-[0_8px_24px_rgba(0,0,0,0.6)] flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-[#10B981] animate-pulse" />
+              <span className="font-mono text-[10.5px] uppercase tracking-wider text-[#10B981] font-semibold">
+                Highlights
+              </span>
+            </div>
+            <div className="flex items-center gap-2 font-mono text-[11px]">
+              <button
+                type="button"
+                onClick={() => scrollToMetric(0)}
+                className={`transition-colors ${activeMetric === 0 ? 'text-[#10B981] font-bold' : 'text-white/50'}`}
+              >
+                4x Wins
+              </button>
+              <span className="text-white/20">·</span>
+              <button
+                type="button"
+                onClick={() => scrollToMetric(1)}
+                className={`transition-colors ${activeMetric === 1 ? 'text-[#10B981] font-bold' : 'text-white/50'}`}
+              >
+                4+ Systems
+              </button>
+              <span className="text-white/20">·</span>
+              <button
+                type="button"
+                onClick={() => scrollToMetric(2)}
+                className={`transition-colors ${activeMetric === 2 ? 'text-[#10B981] font-bold' : 'text-white/50'}`}
+              >
+                2+ Yrs
+              </button>
+              <span className="text-white/20">·</span>
+              <button
+                type="button"
+                onClick={() => scrollToMetric(3)}
+                className={`transition-colors ${activeMetric === 3 ? 'text-[#10B981] font-bold' : 'text-white/50'}`}
+              >
+                9.1 GPA
+              </button>
+            </div>
+          </div>
 
-            {/* Featured Hackathon Spotlight Card */}
+          {/* Right Column: Scrollable Cards Linked with Sticky Left Panel */}
+          <div className="lg:col-span-7 highlights-list flex flex-col gap-5 w-full">
+
+            {/* Card 0: Featured Hackathon Spotlight Card */}
             <div
-              className="reveal relative p-7 sm:p-8 rounded-2xl border border-[#10B981]/35 bg-gradient-to-br from-[#0B251D]/90 via-[#071812]/90 to-[#04100B]/95 backdrop-blur-xl shadow-[0_20px_50px_rgba(13,110,79,0.15)] group overflow-hidden transition-all duration-500 hover:border-[#10B981]/60"
-              style={{ transitionDelay: '0.2s' }}
+              ref={(el) => (itemRefs.current[0] = el)}
+              data-metric="0"
+              className={`reveal relative p-6 sm:p-8 rounded-2xl border backdrop-blur-xl transition-all duration-500 overflow-hidden group shadow-[0_20px_50px_rgba(13,110,79,0.15)] ${
+                activeMetric === 0
+                  ? 'border-[#10B981]/60 bg-gradient-to-br from-[#0B251D] via-[#071812] to-[#04100B]'
+                  : 'border-[#10B981]/30 bg-gradient-to-br from-[#0B251D]/80 via-[#071812]/85 to-[#04100B]/90'
+              }`}
             >
               {/* Subtle Ambient Radial Glow */}
               <div className="absolute -top-16 -right-16 w-56 h-56 bg-[#10B981]/15 rounded-full blur-3xl pointer-events-none group-hover:bg-[#10B981]/25 transition-all duration-700" />
@@ -205,7 +345,7 @@ export const Highlights = () => {
                     <span className="font-mono text-[11px] uppercase tracking-[0.25em] text-[#10B981] font-semibold block mb-0.5">
                       Competitive Track Record
                     </span>
-                    <h3 className="font-display font-bold text-[20px] sm:text-[23px] text-white">
+                    <h3 className="font-display font-bold text-[19px] sm:text-[23px] text-white">
                       Winner Across 4 Major Hackathons
                     </h3>
                   </div>
@@ -240,37 +380,56 @@ export const Highlights = () => {
             </div>
 
             {/* Other Key Milestones */}
-            {MILESTONES.map((m, i) => (
-              <div
-                key={i}
-                className="reveal p-5 sm:p-6 rounded-xl border border-white/5 bg-[#071711]/60 backdrop-blur-md transition-all duration-500 hover:border-[#0D6E4F]/50 hover:bg-[#0A1C15] group flex items-start gap-4 sm:gap-5"
-                style={{ transitionDelay: `${(i + 3) * 0.1}s` }}
-              >
-                <div className="w-10 h-10 flex-shrink-0 rounded-lg border border-[#0D6E4F]/40 bg-[#0A1C15] flex items-center justify-center text-[#10B981] group-hover:bg-[#10B981]/10 group-hover:scale-105 group-hover:border-[#10B981]/50 transition-all duration-300 shadow-[0_0_15px_rgba(13,110,79,0.1)]">
-                  {m.icon}
-                </div>
-
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between gap-2 mb-1.5 flex-wrap">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <span className="font-mono text-[10.5px] uppercase tracking-[0.22em] text-[#10B981] font-semibold">
-                        {m.category}
-                      </span>
-                      <span className="w-1 h-1 rounded-full bg-white/20 hidden sm:inline-block"></span>
-                      <h4 className="font-display font-bold text-white text-[15px] sm:text-[16px] group-hover:text-[#10B981] transition-colors">
-                        {m.title}
-                      </h4>
-                    </div>
-                    <span className="font-mono text-[10.5px] text-[#9A8880] tracking-wider bg-white/[0.03] px-2.5 py-0.5 rounded border border-white/5">
-                      {m.badge}
-                    </span>
+            {MILESTONES.map((m, i) => {
+              const isSelected = activeMetric === m.metricIndex
+              return (
+                <div
+                  key={i}
+                  ref={(el) => (itemRefs.current[i + 1] = el)}
+                  data-metric={m.metricIndex}
+                  className={`reveal p-5 sm:p-6 rounded-xl border backdrop-blur-md transition-all duration-400 group flex items-start gap-4 sm:gap-5 ${
+                    isSelected
+                      ? 'border-[#10B981]/50 bg-[#0A1C15] shadow-[0_10px_30px_rgba(13,110,79,0.15)]'
+                      : 'border-white/5 bg-[#071711]/60 hover:border-[#0D6E4F]/50 hover:bg-[#0A1C15]'
+                  }`}
+                  style={{ transitionDelay: `${(i + 1) * 0.08}s` }}
+                >
+                  <div
+                    className={`w-10 h-10 flex-shrink-0 rounded-lg border flex items-center justify-center transition-all duration-300 shadow-[0_0_15px_rgba(13,110,79,0.1)] ${
+                      isSelected
+                        ? 'border-[#10B981] bg-[#10B981]/15 text-[#10B981] scale-105'
+                        : 'border-[#0D6E4F]/40 bg-[#0A1C15] text-[#10B981] group-hover:bg-[#10B981]/10 group-hover:scale-105 group-hover:border-[#10B981]/50'
+                    }`}
+                  >
+                    {m.icon}
                   </div>
-                  <p className="text-[13.5px] sm:text-[14.5px] text-white/70 leading-relaxed font-normal">
-                    {m.detail}
-                  </p>
+
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between gap-2 mb-1.5 flex-wrap">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="font-mono text-[10.5px] uppercase tracking-[0.22em] text-[#10B981] font-semibold">
+                          {m.category}
+                        </span>
+                        <span className="w-1 h-1 rounded-full bg-white/20 hidden sm:inline-block"></span>
+                        <h4
+                          className={`font-display font-bold text-[15px] sm:text-[16px] transition-colors ${
+                            isSelected ? 'text-white' : 'text-white/90 group-hover:text-[#10B981]'
+                          }`}
+                        >
+                          {m.title}
+                        </h4>
+                      </div>
+                      <span className="font-mono text-[10.5px] text-[#9A8880] tracking-wider bg-white/[0.03] px-2.5 py-0.5 rounded border border-white/5">
+                        {m.badge}
+                      </span>
+                    </div>
+                    <p className="text-[13.5px] sm:text-[14.5px] text-white/70 leading-relaxed font-normal">
+                      {m.detail}
+                    </p>
+                  </div>
                 </div>
-              </div>
-            ))}
+              )
+            })}
 
           </div>
 

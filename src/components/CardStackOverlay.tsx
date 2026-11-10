@@ -32,6 +32,7 @@ export const CardStackOverlay: React.FC<CardStackOverlayProps> = ({ page1, page2
           scrub: true,
           pin: true,
           pinSpacing: false, // This is the magic for native stack overlapping
+          invalidateOnRefresh: true,
         }
       });
 
@@ -48,6 +49,7 @@ export const CardStackOverlay: React.FC<CardStackOverlayProps> = ({ page1, page2
           start: 'top bottom', // Starts when Page 2 enters from bottom
           end: 'top top',      // Ends when Page 2 fully covers the top
           scrub: true,
+          invalidateOnRefresh: true,
         }
       });
     }, containerRef);
